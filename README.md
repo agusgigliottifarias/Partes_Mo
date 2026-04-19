@@ -1,95 +1,179 @@
-### Laboratorio de Programación y lenguajes
-### Trabajo Práctico
-# Partes de Mano de Obra
+## Laboratorio de Programación y Lenguajes
 
-Para la instalación y configuración del entorno de desarrollo es necesario seguir el siguiente 
-<a href="https://git.fi.mdn.unp.edu.ar/labprog/talleres/taller-restful-uix" target="_blank">INSTRUCTIVO</a>
+### Departamento de Informática - FI-UNPSJB-PM
 
----
+## Instalación y configuración del entorno de desarrollo
 
-## Problema planteado
-*Brifal S.A.* es una empresa de servicios de ingeniería y construcción y basa su operatoria fundamentalmente en los trabajos de ingeniería orientados al uso intensivo de mano de obra.
-Es por ello que el control, supervisión y gestión sobre este recurso es importarte para la sana economía de Brifal.
-Por ello el presente sistema brindará a Brifal de una herramienta que le permita comenzar a transitar el camino de la gestión de aplicación y uso de horas de mano de obra.
+> ESTE LABORATORIO ESTÁ PREPARADO Y PROBADO PARA SER DESARROLLADO SOBRE SISTEMAS **LINUX**, ES REQUERIMIENTO DE LA ASIGNATURA FAMILIARIZARSE CON EL MISMO.
+>
+> Quien no cuente con el mismo en sus máquinas la cátedra sugiere dos posibles aproximaciones:
+> 1. (Recomendada) Instalar cualquier distro Linux dual-boot.
+> 2. Instalar el sistema en una máquina virtual
 
-## Objetivo de la Solución
-Brindar a Brifal de una herramienta de control y gestión de los partes de mano de obra con la consiguiente gestión del personal.
-Como resultado adicional a la cuestión operativa de esta aplicación Brifal contará con un tablero de gestión que le permita tomar decisiones y realizar mejoras en la gestión de ejecución de los proyectos.
-Para ello es importante entender que esta solución es sólo una parte que se concentra exclusivamente en la gestión de la mano de obra de los proyectos.
-A futuro se deberá considerar complementar el presente desarrollo informático con el resto de las actividades de un proyecto, como lo son su presupuestación, alquiler de equipos y el consumo de materiales.
+> En la raíz de este directorio existe el script ´lpl´ para facilitar la ejecución de varios comandos. En el presente instructivo se indicará en cada paso, si corresponde, la opción de ejecución mediante este script. 
 
-## La solución requiere
+## Setup
 
-### Administración de Información del Ambiente para organizar la información de los partes
+### Software necesario previamente
 
-#### Administración de Clientes.
-La Aplicación contará con una administración Básica de los clientes y toda la información que sea de utilidad para realizar a posteriori análisis de información de gestión por diferentes segmentos de información.
+1. Instalar [Git](https://git-scm.com/download/linux)
 
-#### Administración de proyectos (OT).
-La aplicación contará con una gestión básica de administración de proyectos (OT)(Unidad de Trabajo).
-Básicamente con la idea que funcione ligado a la Orden de Compra del cliente y que el mismo permita realizar una administración básica de configuración para la gestión del personal involucrado.
+1. Instalar [Docker](https://docs.docker.com/install/linux/docker-ce/ubuntu/) y [Docker Compose](https://docs.docker.com/compose/install/)
+    > **¡CONFIGURACIÓN IMPORTANTE ANTES DE CONTINUAR!**
+    >
+    1. No olvidar los pasos de post instalación para ejecutar docker sin priviliegios de `root`.
+        ```sh
+        sudo groupadd docker
+        sudo usermod -aG docker $USER
+        ```
+        Para hacer efectivos los cambios en los grupos, reiniciar la terminal o ejecutar
+        ```sh
+        newgrp docker
+        ```
+    1. *Opcional:* Para que docker no arranque de forma automática al inicio:
+        ```sh
+        sudo systemctl disable docker.service
+        sudo systemctl disable containerd.service
+        ```
+    1. Crear el archivo `/etc/docker/daemon.json` con el siguiente conenido:
+        ```json
+        {
+          "userns-remap": "TU_NOMBRE_DE_USUARIO"
+        }
+        ```
+    1. Editar los archivos `/etc/subuid` y `/etc/subgid`. Agregar la línea:
+        ```
+        TU_NOMBRE_DE_USUARIO:1000:65536
+        ```
 
-Este módulo será de vital importancia a futuro si se integra con un módulo de presupuesto y de control y gestión de proyectos en forma integral.
+1. Iniciar servicio docker `sudo systemctl start docker`
+    > Este comando puede variar según la distro de linux utilizada.
 
-La información de proyecto, deberá contener los datos de segmentación que permitan realizar gestión sobre el negocio tanto de aspectos económicos como de control.
+1. Instalar [Postman](https://www.postman.com/downloads/) y [DBeaver](https://dbeaver.io/download/)
 
-Dentro de los mismos podemos destacar a nivel de cliente, toda la estructura de solicitud de un trabajo (Organigrama del cliente) y la información de gestión y comunicación para poder administrar a los proyectos vinculados con las actividades a desarrollar en el mismos y la lista de tareas para lograrlo.
+1. Instalar un editor de texto para escribir el código, se recomienda [VS Code](https://code.visualstudio.com/download).
 
-#### Administración de personal.
-La aplicación contará con una gestión de personal básica. Y una gestión de turnos
-quincenales de asignación al personal.
+### Configuración de usuario de Gitlab
 
-### Administración y Gestión de Partes de Mano de Obra
-#### Carga de Partes de Mano de obra.
-La solución basará su operatoria principal en la carga de los partes de manos de obra que serán asignados a los proyectos y vinculados a un legajo de personal.
-Este módulo de la aplicación deberá realizar el mayor esfuerzo de programación para garantizar la agilidad y seguridad de operación del mismo.
+1. Genera una clave pública y agregarla al repo desde settings/ssh keys en Gitlab. Seguir este [instructivo](https://git.fi.mdn.unp.edu.ar/help/ssh/README#generating-a-new-ssh-key-pair)
 
-#### Control Horario del personal.
-La aplicación permitirá realizar control y gestión de horas asignadas a los proyectos analizando la información cargada.
-Permitiendo de esta forma garantizar la calidad de información que brindará la aplicación.
-Para ello la solución basada en parámetros, la configuración y los proyectos, analizará los posibles problemas de carga de datos, brindando una herramienta para limpiar posibles incongruencias.
-* Implementar gestión de turnos del personal donde se indique por quincena para cada operario el horario asignado (esto determina la cantidad de horas diarias).
-* Indicar para cada turno la factibilidad de horas extra y en qué cantidad.
+### Obtener el código para trabajar
 
-#### Auditoría sobre la gestión y modificación de los partes.
-Para mejorar la gestión y los procedimientos sobre la gestión de partes la aplicación
-registrará un histórico de cambios realizados sobre la información de los partes de mano
-de obra, permitiendo de esta forma reconstruir y trazar la información operativa.
+1. Realizar el **Fork** y dirigirse al repositorio nuevo.
 
-#### Control y corrección de partes por errores de carga.
-La aplicación deberá soportar un mecanismo de ajuste de la información sin perder la cohesión. Para ello y soportado en la gestión de auditoría la aplicación garantizará modificaciones y correcciones consistentes en los partes de mano de obra.
+1. Desde la línea de comandos, clonar este repositorio con la url ssh. 
+    ```sh
+    git clone ssh://git@git.fi.mdn.unp.edu.ar:30000/<repo>`
+    ```
 
-#### Gestión de información.
-La solución brindará un conjunto de reportes que permitirán la óptima gestión sobre la información producida.
-* Cantidad de horas usadas por quincena por proyecto. Distribución de horas por proyecto. Discriminando horas extra y horas normales.
-* Cantidad de horas usadas por quincena por Cliente. Distribución de horas por cliente. Discriminando horas extra y horas normales.
-* Estadísticas de control de errores y avisos detectados, discriminando la cantidad de descartados y la cantidad de corregidos/aceptados.
+1. Ir al directorio clonado `cd <repo_dir>`
 
-## Criterio de satisfacción
+1. Dar permisos de ejecución al script `lpl`: `chmod +x lpl`.
 
-### Ejemplo de uso y validaciones
-La aplicación deberá garantizar la implementación de los casos de uso descriptos anteriormente.
-La verificación de calidad se realizará utilizando las siguientes premisas para un conjunto de pruebas a realizar:
-* Cargar múltiples proyectos para distintos clientes. Donde existan al menos dos tareas diferentes por cada uno.
-Cargar al menos 2 proyectos diferentes para algunos clientes.
-* Generar al menos 50 operarios distintos.
-> Nota: Se recomienda que esta tarea se realice por simulación de datos y no por carga directa.
+1. Hacer el build de las imágenes Docker `./lpl build` 
 
-* Generar al menos 2 turnos diarios de 8 horas con capacidad de 50% de horas extras adicionales para uno de ellos. Generar al menos un calendario de 4 quincenas con rotación del personal.
-> Nota: Se recomienda que esta tarea se realice por simulación de datos y no por carga directa.
+1. Levantar los servidores `./lpl up`
+      > Este paso toma un tiempo debido a que debe descargar las dependencias del proyecto. Para monitorear el progreso utilizar `./lpl logs`.
+      >
+      > Cuando la aplicación esté lista se verá el mensaje:
+      >
+      > `backend | [...] Started BackendApplication in xxx seconds`
 
-* Diseñar pruebas de funcionalidad (una prueba por caso), donde se puedan verificar los siguientes controles:
-  * Se ingresan al menos 10 operarios por lote de prueba de caso.
-  * Se ingresa al menos un operario que está fuera de su turno.
-  * Se ingresa al menos un operario que trabaje horas extras.
-  * Se ingresa al menos un operario que supere la cantidad de horas del turno.
+1. Verificar funcionamiento ingresando a http://localhost:8080/ . Si todo funciona correctamente debería responder el siguiente JSON:
+      ```json
+      {
+      "data": "Hello Labprog!",
+      "message": "Server Online",
+      "status": 200
+      }
+      ```
+1. Crear el proyecto Angular en el front:
+    ```sh
+    $ ./lpl sh frontend
+    [frontend:node]$ ng new cli --minimal -S -g --defaults 
+    ```
 
-  > Nota: Se recomienda que parte de esta carga se realice por simulación de datos y no por carga directa. Se deben cargar muchos datos diarios.
+1. Detener los servidores `./lpl down`
 
-* Comprobar que el proceso de verificación de partes genera las advertencias y errores producidos por cada prueba.
-* En la pantalla de verificación decidir no mas del 75% de los casos a revisar con confirmación positiva (aceptación) y el 25% restante con decisión negativa (no aceptados).
-* Al momento de la DEMO final se deberá tener cargadas al menos 3 quincenas y la DEMO se realizará sobre una nueva (verificar mecanismos para simular fechas y calendarios).
-La finalidad es poder contar con datos suficientes para poder apreciar los reportes solicitados.
+1. Descomentar linea indicadas en `docker-compose.yml`.
 
-![](diagrama.png)
+1. Levantar los servidores `./lpl up`
+
+1. Verificar funcionamiento ingresando a http://localhost:4200/ .
+
+Aquí finaliza la instalación y configuración del ambiente de desarrollo, a continuación se detallan los pasos para comenzar con el desarrollo.
+
+## Desarrollar con Docker
+
+Para los siguientes pasos asegurarse de que el servicio de Docker esté corriendo, se puede ejecutar el comando `docker ps`.
+
+El script `lpl` en la raíz del repositorio tiene una serie de comandos útiles abreviados para asistir en el proceso de desarrollo.
+
+### Conectarse a los servidores por línea de comandos
+
+Para conectarse al servidor **backend**, una vez corriendo los servicios, ejecutar: ```./lpl sh backend```
+
+De la misma forma es posible conectarse a cualquiera de los contenedores solo indicando el nombre del mismo.
+
+### Detener los servicios
+
+Para detener los servicios configurados en el archivo de docker-compose ejecutar: ```./lpl down```
+
+El siguiente comando es para detener por completo el servicio de docker. En este caso, si los servicios están corriendo se detendrán y cuando docker sea iniciado nuevamente, estos contenedores serán levantados de forma automática.
+
+`sudo systemctl stop docker`
+
+## Desarrollar en Java en el backend
+
+El servidor de backend despliga automáticamente el código compilado. Luego de modificar los archivos locales se debe ejecutar el siguiente comando:
+
+1. `./lpl compile`
+
+Esto compilará el código en el servidor. Si no hay errores de compilación se desplegará al instante.
+
+En ciertas ocaciones, debido a algún error de compilación que haya sido corregido, es posible que el backend no vuelva a desplegar la aplicación. En este caso, sólo es necesario reiniciar el backend.
+
+1. `./lpl restart backend`
+
+## Staging de datos
+
+> PENDIENTE
+
+## Stack tecnológico
+Además de cumplir con los requerimientos funcionales planteados en cada TP, el desarrollo de la aplicación deberá garantizar las siguientes premisas:
+* Usar JPA como método de persistencia del modelo de datos. Para las consultas a la base de datos se deberá utilizar JPQL.
+* Diseñar la aplicación utilizando los principios de los patrones de Separación en capas &rarr; Layered y N-Tiers.
+* La aplicación deberá garantizar transacciones ACID. Especialmente para los procesos.
+* Siempre que se pueda y deba, garantizar los principios SOLID de la programación Orientada a Objetos. (SRP, OCP, LSP, ISP, DIP).
+* El stack tecnológico requerido para la solución contempla el uso de:
+  + **Git** para el control de versiones y distribución del código.
+  + **Docker** para la administración de la virtualización en contenedores de los servidores.
+  + **Docker compose** pra la coordinación de multiples contenedores.
+  + **Angular**  para el desarrollo de la aplicación frontend en javascript.
+  + **Spring Boot** para el desarrollo de la aplicación backend en java.
+  + **JPA** como ORM para la implementación del modelo.
+  + **Postgres** cómo motor de base de datos.
+  + **Cucumber-js** para el testing de los servicios REST.
+* La gestión de tablas se realizará exclusivamente desde el modelo provisto a continuación y generado desde el ORM. **No se permite ingeniería inversa desde la DB.**
+
+## Forma de entrega
+* El trabajo será realizado en forma individual. Se podrá trabajar colaborativamente con otros compañeros.
+* El trabajo práctico deberá ser entregado de la siguiente forma:
+  * Todo el sitema completo debe ser entrega mediante el proyecto en Git.
+  * Bitacora del desarrollo que incluya: Toma de decisiones de la arquitectura de la solución, restricciones de uso y relato del detalle de la evolución del desarrollo. En formato Wiki o Markdown. Este informe debería ser evolutivo en el transcurso del desarrollo del TP.
+  * Toda la bibliografía utilizada deberá ser referenciada indicando título y autor, en una sección dedicada a tal efecto.
+  * El diseño con el que se aborda la solución al problema planteado. En el caso de utilizar patrones, cuales de ellos utilizó y en qué contexto.
+  * El programa de aplicación que implementa la solución mediante el cumplimiento efectivo de los test planteados en las features de BDD.
+  * El código fuente debe estar sincronizado en git todo el tiempo para que la cátedra acceda al mismo y pueda verificar permanenetente los avances.
+
+## Forma de aprobación
+Se tendrá en cuenta para la aprobación del trabajo práctico y los integrantes del grupo:
+1. Planificación del desarrollo de la aplicación. Cumplimiento de las etapas previstas.
+2. Funcionamiento de la aplicación desarrollada. Se evaluará si la funcionalidad cumple con lo solicitado, en función de test de Criterios de Aceptación escritos en las features BDD.
+3. Estructura general de la presentación, su legibilidad y facilidad de lectura y comprensión.
+4. Contenido del informe y el uso de la información técnica para elaborarlo.
+
+
+
+
 

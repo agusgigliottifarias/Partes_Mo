@@ -1,0 +1,31 @@
+<div *ngIf="play">
+  <h2>{{ play.name | uppercase }}</h2>
+  <form #form='ngForm'>
+    <div class="form-group">
+      <label for="name">Nombre:</label>
+      <input name="name" placeholder="Nombre" class="form-control" [(ngModel)]="play.name" required #name="ngModel">
+    </div>
+    
+    <div class="form-group">
+      <label for="code">Codigo:</label>
+      <input name="code" placeholder="Codigo" class="form-control" [(ngModel)]="play.code">
+    </div>
+    
+    <div class="form-group">
+      <label for="type">Tipo:</label>
+      <input 
+        id="type" 
+        name="type" 
+        type="text" 
+        class="form-control" 
+        [(ngModel)]="play.type" 
+        [ngbTypeahead]="searchType" 
+        placeholder="Tipo" 
+        autocomplete="off">
+    </div>
+    <br>
+    
+    <button type="button" (click)="goBack()" class="btn btn-danger me-2">Atras</button>
+    <button type="button" (click)="save()" class="btn btn-success" [disabled]="form.invalid">Guardar</button>
+  </form>
+</div>

@@ -1,0 +1,25 @@
+import { Component } from '@angular/core';
+import { RouterOutlet, RouterLink } from '@angular/router';
+
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [RouterOutlet, RouterLink],
+  template: `
+    <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
+      <h5 class="my-0 mr-md-auto font-weight-normal">Print the Bill</h5>
+      <nav class="my-2 my-md-0 mr-md-3">
+        <a class="p-2 text-dark" routerLink="/plays">Plays</a>
+        <a class="p-2 text-dark" routerLink="/customers">Customers</a>
+        <a class="p-2 text-dark" routerLink="/bordero">Borderos</a>
+      </nav>
+    </div>
+
+    <div class="container">
+      <router-outlet></router-outlet>
+    </div>
+  `,
+  styles: []
+})
+export class App {
+}
