@@ -1,0 +1,71 @@
+<div class="container mt-4">
+  
+  <div class="d-flex align-items-center mb-4">
+    <h2 class="me-4">Nuevo Proyecto</h2>
+    <button class="btn btn-success me-2 px-4 shadow-sm" (click)="guardar()" 
+            [disabled]="!proyecto.cliente || !proyecto.codigo">
+      Guardar
+    </button>
+    <button class="btn btn-danger px-4 shadow-sm" (click)="cancelar()" 
+            style="background-color: #d63384; border: none;">
+      Cancelar
+    </button>
+  </div>
+
+  <div class="row g-3">
+    
+    <div class="col-md-6">
+      <div class="d-flex align-items-center">
+        <label class="badge bg-secondary me-2 p-2">Cliente</label>
+        <div class="flex-grow-1 position-relative">
+          <input type="text" class="form-control border-info" 
+                 [(ngModel)]="nombreClienteBusqueda"
+                 (keyup)="buscarClientes(nombreClienteBusqueda)"
+                 placeholder="Escribí para buscar...">
+          
+          <ul class="list-group position-absolute w-100 shadow-lg" style="z-index: 1000;" *ngIf="clientesEncontrados.length > 0">
+            <li class="list-group-item list-group-item-action" 
+                *ngFor="let c of clientesEncontrados" 
+                (click)="seleccionarCliente(c)" style="cursor: pointer;">
+              {{ c.nombre }}
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 d-flex align-items-center">
+      <label class="badge bg-secondary me-2 p-2">CUIT</label>
+      <span class="text-primary fw-bold" *ngIf="proyecto.cliente">
+        {{ proyecto.cliente.cuit }}
+      </span>
+    </div>
+
+    <div class="col-12 d-flex align-items-center">
+      <label class="badge bg-secondary me-2 p-2">Código</label>
+      <input type="text" class="form-control border-dark" 
+             [(ngModel)]="proyecto.codigo" 
+             style="max-width: 400px;">
+    </div>
+
+    <div class="col-12 d-flex align-items-center">
+      <label class="badge bg-secondary me-2 p-2">Descripción</label>
+      <input type="text" class="form-control border-dark" 
+             [(ngModel)]="proyecto.descripcion">
+    </div>
+
+    <div class="col-12 d-flex align-items-center">
+      <label class="badge bg-secondary me-2 p-2">Estado</label>
+    </div>
+
+  </div>
+
+  <div class="mt-5 pt-4 border-top">
+     <h3>Tareas 
+       <button class="btn btn-outline-primary btn-sm ms-3" disabled title="Aún no disponible">
+         Nueva
+       </button>
+     </h3>
+  </div>
+
+</div>

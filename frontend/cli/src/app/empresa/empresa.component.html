@@ -1,0 +1,66 @@
+<div class="container mt-4">
+
+  <div *ngIf="vista === 'nuevo'">
+    <div class="d-flex align-items-center mb-4">
+      <h1 class="me-4">Nueva Empresa</h1>
+      <button class="btn btn-success me-2" (click)="save()">Guardar</button>
+      <button class="btn btn-secondary" (click)="vista = 'listar'">Ir al Listado</button>
+    </div>
+
+    <div class="row g-3">
+      <div class="col-md-4">
+        <label class="form-label fw-bold">Nombre</label>
+        <input type="text" id="nombre" class="form-control" 
+               [(ngModel)]="nuevaEmpresa.nombre" 
+               placeholder="Ej: Matriz Hierros S.A.">
+      </div>
+
+      <div class="col-md-4">
+        <label class="form-label fw-bold">Descripción (CUIT)</label>
+        <input type="text" id="cuit" class="form-control" 
+               [(ngModel)]="nuevaEmpresa.cuit" 
+               maxlength="11"
+               placeholder="Ej: 30-111111-9">
+      </div>
+
+      <div class="col-md-4">
+        <label class="form-label fw-bold">Observaciones</label>
+        <input type="text" id="observaciones" class="form-control" 
+               [(ngModel)]="nuevaEmpresa.observaciones" 
+               placeholder="Ej: Cliente de zona norte">
+      </div>
+    </div>
+
+    <div id="respuesta" *ngIf="mensajeRespuesta" class="alert alert-info mt-4">
+      {{ mensajeRespuesta }}
+    </div>
+  </div>
+
+  <div *ngIf="vista === 'listar'">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2>Listado de Clientes</h2>
+      <button class="btn btn-primary" (click)="vista = 'nuevo'">+ Nuevo</button>
+    </div>
+
+    <input type="text" class="form-control mb-3 w-50" placeholder="Filtrar por nombre o CUIT..." [(ngModel)]="searchTerm" (keyup)="search()">
+
+    <table class="table table-striped border shadow-sm">
+      <thead class="table-dark">
+        <tr>
+          <th>Nombre</th> <th>CUIT</th> <th class="text-center">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let e of empresas">
+          <td>{{ e.nombre }}</td>
+          <td>{{ e.cuit }}</td>
+          <td class="text-center">
+            <button class="btn btn-sm btn-warning me-2" (click)="edit(e)">Editar</button>
+            <button class="btn btn-sm btn-danger" (click)="delete(e.id!)">Borrar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
