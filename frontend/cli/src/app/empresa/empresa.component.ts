@@ -9,7 +9,7 @@ import { EmpresaService } from './empresa.service';
   selector: 'app-empresa',
   standalone: true,
   imports: [CommonModule, FormsModule, RouterModule],
-  templateUrl: './empresa.component.html',
+  templateUrl: 'empresa.component.html',
 })
 export class EmpresaComponent implements OnInit {
   
@@ -55,7 +55,6 @@ export class EmpresaComponent implements OnInit {
       next: (res: any) => {
         this.mensajeRespuesta = res.message; 
         this.list();
-        // Esto limpia los campos después de mostrar el cartel de éxito
         this.resetForm();
       },
       error: (err) => this.mensajeRespuesta = "Error al conectar con el servidor"

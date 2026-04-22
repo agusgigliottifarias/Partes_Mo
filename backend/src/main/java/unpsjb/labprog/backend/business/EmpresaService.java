@@ -7,7 +7,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import unpsjb.labprog.backend.model.Empresa;
-import unpsjb.labprog.backend.model.Estado; 
 
 @Service
 public class EmpresaService {

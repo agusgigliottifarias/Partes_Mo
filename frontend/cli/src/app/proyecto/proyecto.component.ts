@@ -9,7 +9,7 @@ import { Empresa } from '../empresa/empresa';
   selector: 'app-proyecto',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  templateUrl: './proyecto.component.html'
+  templateUrl: 'proyecto.component.html'
 })
 export class ProyectoComponent implements OnInit {
   
@@ -17,7 +17,7 @@ export class ProyectoComponent implements OnInit {
     codigo: '',
     descripcion: '',
     cliente: null,
-    estado: null // Queda desactivado por ahora
+    estado: null 
   };
 
   clientesEncontrados: Empresa[] = [];
@@ -29,7 +29,6 @@ export class ProyectoComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    // No cargamos estados por ahora
   }
 
   buscarClientes(term: string) {
@@ -49,7 +48,6 @@ export class ProyectoComponent implements OnInit {
   }
 
   guardar() {
-    // Verificamos solo lo básico
     if (this.proyecto.cliente && this.proyecto.codigo) {
       this.service.save(this.proyecto).subscribe(res => {
         alert(res.message);
