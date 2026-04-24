@@ -15,12 +15,12 @@ public class EmpresaPresenter {
     @Autowired
     EmpresaService service;
 
-    @GetMapping
+    @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<Object> findAll() {
         return Response.ok(service.findAll());
     }
 
-    @GetMapping("/id/{id}")
+    @RequestMapping(value = "/id/{id}", method = RequestMethod.GET)
     public ResponseEntity<Object> findById(@PathVariable("id") int id){
         Empresa empresaOrNull = service.findById(id);
         return (empresaOrNull != null) ?
@@ -28,17 +28,27 @@ public class EmpresaPresenter {
             Response.notFound("Empresa " + id + " no encontrada.");
     }
 
-    @GetMapping("/search/{term}")
-    public ResponseEntity<Object> search(@PathVariable("term") String term){
-            return Response.ok(service.search(term));
+    @RequestMapping(value = "/page", method = RequestMethod.GET)
+    public ResponseEntity<Object> findByPage(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+        
+        return Response.ok(service.findByPage(page, size));
     }
 
-   @PostMapping
+    @RequestMapping(value = "/search/{term}", method = RequestMethod.GET)
+    public ResponseEntity<Object> search(@PathVariable("term") String term){
+        return Response.ok(service.search(term));
+    }
+
+    @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<Object> create(@RequestBody Empresa empresa) {
         if (empresa.getId() != 0) {
-            return Response.error(empresa, "No puede tener un ID definido para crear.");
+            return Response.error(
+                empresa, 
+                "Está intentando crear una empresa. Esta no puede tener un id definido."
+            );
         }
-        
         Empresa nueva = service.save(empresa);
         
         String mensajeExito = "Cliente " + nueva.getNombre() + 
@@ -48,7 +58,15 @@ public class EmpresaPresenter {
         return Response.ok(nueva, mensajeExito);
     }
 
-    @DeleteMapping("/{id}")
+    @RequestMapping(method = RequestMethod.PUT)
+    public ResponseEntity<Object> update(@RequestBody Empresa empresa) {
+        if (empresa.getId() <= 0) {
+            return Response.error(empresa, "Debe especificar un id válido para modificar.");
+        }
+        return Response.ok(service.save(empresa), "Empresa actualizada con éxito.");
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<Object> delete(@PathVariable("id") int id){
         service.delete(id);
         return Response.ok("Empresa " + id + " borrada con éxito.");

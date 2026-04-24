@@ -2,65 +2,79 @@
 
   <div *ngIf="vista === 'nuevo'">
     <div class="d-flex align-items-center mb-4">
-      <h1 class="me-4">Nueva Empresa</h1>
-      <button class="btn btn-success me-2" (click)="save()">Guardar</button>
-      <button class="btn btn-secondary" (click)="vista = 'listar'">Ir al Listado</button>
+      <h1 class="me-4">{{ nuevaEmpresa.id ? 'Editar' : 'Nueva' }} Empresa</h1>
+      <button class="btn btn-success me-2 shadow-sm" [disabled]="errorCuit !== ''" (click)="save()">
+        Guardar
+      </button>
+      <button class="btn btn-secondary shadow-sm" (click)="vista = 'listar'">Ir al Listado</button>
     </div>
 
     <div class="row g-3">
       <div class="col-md-4">
         <label class="form-label fw-bold">Nombre</label>
-        <input type="text" id="nombre" class="form-control" 
-               [(ngModel)]="nuevaEmpresa.nombre" 
-               placeholder="Ej: Matriz Hierros S.A.">
+        <input type="text" class="form-control" [(ngModel)]="nuevaEmpresa.nombre" placeholder="Ej: Brifal S.A.">
       </div>
 
       <div class="col-md-4">
-        <label class="form-label fw-bold">Descripción (CUIT)</label>
-        <input type="text" id="cuit" class="form-control" 
-               [(ngModel)]="nuevaEmpresa.cuit" 
-               maxlength="13"
-               placeholder="Ej: 30-11111111-9">
+        <label class="form-label fw-bold">CUIT</label>
+        <input type="text" class="form-control" [class.is-invalid]="errorCuit !== ''"
+               [ngModel]="nuevaEmpresa.cuit" (input)="onCuitInput($event)" placeholder="Ej: 30-10203040-9" maxlength="13">
+        <div class="invalid-feedback" *ngIf="errorCuit">{{ errorCuit }}</div>
       </div>
 
       <div class="col-md-4">
         <label class="form-label fw-bold">Observaciones</label>
-        <input type="text" id="observaciones" class="form-control" 
-               [(ngModel)]="nuevaEmpresa.observaciones" 
-               placeholder="Ej: Cliente de zona norte">
+        <input type="text" class="form-control" [(ngModel)]="nuevaEmpresa.observaciones" placeholder="Datos adicionales...">
       </div>
     </div>
-
-    <div id="respuesta" *ngIf="mensajeRespuesta" class="alert alert-info mt-4">
-      {{ mensajeRespuesta }}
-    </div>
+    <div *ngIf="mensajeRespuesta" class="alert alert-info mt-4">{{ mensajeRespuesta }}</div>
   </div>
 
   <div *ngIf="vista === 'listar'">
     <div class="d-flex justify-content-between align-items-center mb-4">
-      <h2>Listado de Clientes</h2>
-      <button class="btn btn-primary" (click)="vista = 'nuevo'">+ Nuevo</button>
+      <h2 class="text-primary">Listado de Clientes</h2>
+      <button class="btn btn-primary shadow-sm" (click)="vista = 'nuevo'">+ Nuevo</button>
     </div>
 
-    <input type="text" class="form-control mb-3 w-50" placeholder="Filtrar por nombre o CUIT..." [(ngModel)]="searchTerm" (keyup)="search()">
+    <input type="text" class="form-control mb-3 w-50 shadow-sm" placeholder="Filtrar por nombre o CUIT..." 
+           [(ngModel)]="searchTerm" (keyup)="search()">
 
-    <table class="table table-striped border shadow-sm">
-      <thead class="table-dark">
-        <tr>
-          <th>Nombre</th> <th>CUIT</th> <th class="text-center">Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let e of empresas">
-          <td>{{ e.nombre }}</td>
-          <td>{{ e.cuit }}</td>
-          <td class="text-center">
-            <button class="btn btn-sm btn-warning me-2" (click)="edit(e)">Editar</button>
-            <button class="btn btn-sm btn-danger" (click)="delete(e.id!)">Borrar</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <div *ngIf="empresas.length > 0; else listaVacia">
+      <table class="table table-striped border shadow-sm">
+        <thead class="table-dark">
+          <tr>
+            <th>Nombre</th> 
+            <th>CUIT</th> 
+            <th class="text-center">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let e of empresas">
+            <td><strong>{{ e.nombre }}</strong></td>
+            <td>{{ e.cuit }}</td>
+            <td class="text-center">
+              <button class="btn btn-sm btn-warning me-2" (click)="edit(e)">Editar</button>
+              <button class="btn btn-sm btn-danger" (click)="delete(e.id!)">Borrar</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="d-flex justify-content-center mt-3">
+        <app-pagination 
+          [totalPages]="totalPages" 
+          [currentPage]="currentPage"
+          [last]="isLastPage"
+          (pageChangeRequested)="loadPage($event)">
+        </app-pagination>
+      </div>
+    </div>
+
+    <ng-template #listaVacia>
+      <div class="alert alert-info text-center shadow-sm mt-4">
+        <p class="mb-0">No hay empresas cargadas</p>
+      </div>
+    </ng-template>
   </div>
 
 </div>

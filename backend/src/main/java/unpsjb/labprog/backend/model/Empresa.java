@@ -19,10 +19,10 @@ public class Empresa {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String nombre;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true,length = 13)
     private String cuit;
 
     @Column
